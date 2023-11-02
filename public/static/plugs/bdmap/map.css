@@ -1,0 +1,38 @@
+* {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+body {
+    background-color: #FFF;
+    overflow: hidden;
+    font: 14px/180% Arial, Helvetica, sans-serif, "新宋体";
+    color: #333333;
+}
+
+.panel {
+    width: 750px;
+    margin: 10px auto;
+}
+
+#l-map {
+    height: 460px;
+    width: 740px;
+}
+
+input {
+    width: 350px;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #C9C9C9;
+    background-color: #fff;
+    color: #555;
+    padding: 0px 5px;
+    border-radius: 5px;
+}
+
+button {
+    padding: 4px 5px;
+    margin-left: 8px;
+}

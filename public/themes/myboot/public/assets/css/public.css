@@ -1,0 +1,153 @@
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+a {
+	text-decoration: none
+}
+
+.p_flex {
+	display: flex;
+	display: -webkit-box;
+	display: -webkit-flex;
+}
+
+.p_flex1 {
+	flex: 1;
+	-ms-flex: 1;
+	-webkit-flex: 1;
+}
+
+.p_row_reverse {
+	flex-direction: row-reverse;
+	-ms-flex-direction: row-reverse;
+	-webkit-flex-direction: row-reverse;
+}
+
+.p_flex_wrap {
+	-ms-flex-wrap: wrap;
+	-webkit-flex-wrap: wrap;
+	flex-wrap: wrap;
+}
+
+.p_space_between {
+	justify-content: space-between;
+	-webkit-justify-content: space-between;
+
+}
+
+.p_align_items {
+	align-items: center;
+	-webkit-align-items: center;
+}
+
+.p_column_between {
+	align-content: space-between;
+	-webkit-align-content: space-between;
+}
+
+.p_justify_center {
+	justify-content: center;
+	-webkit-justify-content: center;
+}
+
+.p_text_right {
+	text-align: right;
+}
+
+.p_text_center {
+	text-align: center;
+}
+
+.p_align_between {
+	-ms-flex-direction: column;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+}
+
+.p_align_row {
+	-ms-flex-direction: row;
+	-webkit-flex-direction: row;
+	flex-direction: row;
+}
+
+/* 圆角 */
+.border_radius2 {
+	border-radius: 2px;
+}
+
+.border_radius5 {
+	border-radius: 5px;
+}
+
+.border_radius10 {
+	border-radius: 10px;
+}
+
+.border_radius14 {
+	border-radius: 14px;
+}
+
+.border_radius20 {
+	border-radius: 20px;
+}
+
+.border_radius25 {
+	border-radius: 25px;
+}
+
+.border_radius_round {
+	border-radius: 50%;
+}
+
+/* 盒子阴影 */
+.p_box_shadow {
+	box-shadow: 0px 0px 14px 6px rgba(77, 77, 77, 0.08);
+}
+
+/* 一行文本变点 */
+.p_line1_dot {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* 二行文本变点 */
+.p_line2_dot {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+}
+
+/* 三行文本变点 */
+.p_line3_dot {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	overflow: hidden;
+}
+
+/* 四行文本变点 */
+.p_line4_dot {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 4;
+	overflow: hidden;
+}
+
+/* 中划线 */
+.center_line {
+	text-decoration-line: line-through;
+}
+.font_12{
+	font-size: 12px;
+}
+.font_14{
+	font-size: 14px;
+}
+.font_20{
+	font-size: 20px;
+}

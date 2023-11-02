@@ -1,0 +1,17 @@
+{
+    "name": "Concierge Services",
+    "action": "portal/Article/index",
+    "description": "Concierge Services模板文件",
+    "order": 40.0,
+    "more": {
+        "vars": {
+            "hot_articles_category_id": {
+                "title": "Hot Articles分类ID",
+                "value": "1",
+                "type": "text",
+                "tip": "",
+                "rule": []
+            }
+        }
+    }
+}

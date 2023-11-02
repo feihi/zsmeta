@@ -1,0 +1,17 @@
+{
+    "name": "Strategy Consulting",
+    "action": "portal/Article/index",
+    "description": "Strategy Consulting模板文件",
+    "order": 30.0,
+    "more": {
+        "vars": {
+            "hot_articles_category_id": {
+                "title": "Hot Articles分类ID",
+                "value": "1",
+                "type": "text",
+                "tip": "",
+                "rule": []
+            }
+        }
+    }
+}

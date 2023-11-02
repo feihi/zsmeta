@@ -1,0 +1,17 @@
+{
+    "name": "Funds Services",
+    "action": "portal/Article/index",
+    "description": "Funds Services模板文件",
+    "order": 20.0,
+    "more": {
+        "vars": {
+            "hot_articles_category_id": {
+                "title": "Hot Articles分类ID",
+                "value": "1",
+                "type": "text",
+                "tip": "",
+                "rule": []
+            }
+        }
+    }
+}

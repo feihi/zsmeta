@@ -1,0 +1,163 @@
+<style>
+    .post-analysis-title{
+        font-size: 20px;
+        color: #666;
+    }
+    .post-analysis-value{
+        font-size: 22px;
+        color: #666;
+    }
+    .overflow-line{
+        text-overflow: -o-ellipsis-lastline;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+    }
+    .overflow-line-1{
+        line-clamp: 1;
+        -webkit-line-clamp: 1;
+    }
+    .overflow-line-2{
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+    }
+    .overflow-line-3{
+        line-clamp: 3;
+        -webkit-line-clamp: 3;
+    }
+    .overflow-line-5{
+        line-clamp: 5;
+        -webkit-line-clamp: 5;
+    }
+    .overflow-line-6{
+        line-clamp: 6;
+        -webkit-line-clamp: 6;
+    }
+</style>
+<script src="__PLUGIN_TMPL__/assets/js/echarts/echarts.min.js"></script>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">文章发布数据分析</h3>
+    </div>
+    <div class="panel-body home-info">
+        <div class="col-lg-3 col-md-3 text-center pull-left">
+            <div class="post-analysis-title">发布总量</div>
+            <div class="post-analysis-value"><font style="font-weight: bolder">{$total_count|default=0}</font> 篇</div>
+        </div>
+        <div class="col-lg-3 col-md-3 text-center pull-left">
+            <div class="post-analysis-title">未发布量</div>
+            <div class="post-analysis-value"><font style="font-weight: bolder">{$no_published_count|default=0}</font> 篇</div>
+        </div>
+        <div class="col-lg-3 col-md-3 text-center pull-left">
+            <div class="post-analysis-title">浏览量</div>
+            <div class="post-analysis-value"><font style="font-weight: bolder">{$total_view_count|default=0}</font> 次</div>
+        </div>
+        <div class="col-lg-3 col-md-3 text-center pull-left">
+            <div class="post-analysis-title">今天发布量</div>
+            <div class="post-analysis-value"><font style="font-weight: bolder">{$today_count|default=0}</font> 篇</div>
+        </div>
+
+        <div class="clearfix"></div>
+        <div class="col-lg-12 col-md-12" style="margin-top: 10px;">
+            <div class="col-lg-4 col-md-4 pull-left">
+                <div id="post_category_analysis_map" style="height: 300px;"></div>
+                <script>
+                    var myChart = echarts.init(document.getElementById('post_category_analysis_map'));
+                    var option = {
+                        backgroundColor:'#fff',
+                        color: ['#3A97E4'],
+                        title: {
+                            text: '栏目发布量 TOP 10'
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                            }
+                        },
+                        xAxis:{
+                            type: 'category',
+                            data: ["{:implode('","',$map_data['category'])}"],
+                            axisTick: {
+                                alignWithLabel: true
+                            },
+                            nameRotate:30,
+                            axisLabel:{rotate:30},
+                        },
+                        yAxis: [
+                            {
+                                type: 'value'
+                            }
+                        ],
+                        series:[
+                            {
+                                name:'文章发布量',
+                                type:'bar',
+                                data:[{:implode(',',$map_data['data'])}],
+                                barWidth: '40%',
+                                label:{
+                                    show:false,
+                                    formatter:'{a}:{c}'
+                                },
+                            },
+                        ]
+                    };
+                    myChart.setOption(option);
+                </script>
+            </div>
+            <div class="col-lg-4 col-md-4 pull-left">
+                <div  style="font-weight: bolder;font-size: 18px;">文章浏览量Top5</div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th width="10%">ID</th>
+                            <th width="70%">标题</th>
+                            <th width="20%">浏览量</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <foreach name="post_view_count" item="item">
+                            <tr>
+                                <td style="line-height: 40px;padding-top: 0;padding-bottom: 0">{$item.id}</td>
+                                <td class="overflow-line overflow-line-1" style="line-height: 40px;padding-top: 0;padding-bottom: 0">{$item.post_title}</td>
+                                <td style="line-height: 40px;padding-top: 0;padding-bottom: 0">{$item.view_count}</td>
+                            </tr>
+                        </foreach>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-4 col-md-4 pull-left">
+                <div  style="font-weight: bolder;font-size: 18px;">未发布文章</div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th width="10%">ID</th>
+                        <th width="60%">标题</th>
+                        <th width="30%">创建时间</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <foreach name="no_published_posts" item="item">
+                        <tr>
+                            <td style="line-height: 40px;padding-top: 0;padding-bottom: 0">{$item.id}</td>
+                            <td class="overflow-line overflow-line-1" style="line-height: 40px;padding-top: 0;padding-bottom: 0">{$item.post_title}</td>
+                            <td style="line-height: 40px;padding-top: 0;padding-bottom: 0">{:date('Y-m-d H:i:s',$item.create_time)}</td>
+                        </tr>
+                    </foreach>
+                    </tbody>
+                </table>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>

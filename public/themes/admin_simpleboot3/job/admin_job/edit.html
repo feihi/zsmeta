@@ -1,0 +1,553 @@
+<include file="public@header"/>
+<style type="text/css">
+    .pic-list li {
+        margin-bottom: 5px;
+    }
+</style>
+<script type="text/html" id="photos-item-tpl">
+    <li id="saved-image{id}" style="width: 80px; float: left; margin-right: 20px">
+        <input id="photo-{id}" type="hidden" name="photo_urls[]" value="{filepath}">
+        <input class="form-control" id="photo-{id}-name" type="hidden" name="photo_names[]" value="{name}"
+               style="width: 200px;" title="图片名称">
+        <img id="photo-{id}-preview" src="{url}" style="height:60px;width:80px;"
+             onclick="imagePreviewDialog(this.src);">
+        <a href="javascript:uploadOneImage('图片上传','#photo-{id}');">替换</a>
+        <a href="javascript:(function(){$('#saved-image{id}').remove();})();">移除</a>
+    </li>
+</script>
+<script type="text/html" id="files-item-tpl">
+    <li id="saved-file{id}">
+        <input id="file-{id}" type="hidden" name="file_urls[]" value="{filepath}">
+        <input class="form-control" id="file-{id}-name" type="text" name="file_names[]" value="{name}"
+               style="width: 200px;" title="文件名称">
+        <a id="file-{id}-preview" href="{preview_url}" target="_blank">下载</a>
+        <a href="javascript:uploadOne('文件上传','#file-{id}','file');">替换</a>
+        <a href="javascript:(function(){$('#saved-file{id}').remove();})();">移除</a>
+    </li>
+</script>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('AdminJob/index')}">岗位管理</a></li>
+        <li>
+            <a href="{:url('AdminJob/add')}">添加岗位</a>
+        </li>
+        <li class="active"><a href="#">编辑岗位</a></li>
+    </ul>
+    <form action="{:url('AdminJob/editPost')}" method="post" class="form-horizontal js-ajax-form margin-top-20">
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-bordered">
+                    <tr>
+                        <th width="100">分类<span class="form-required">*</span></th>
+                        <td>
+                            <input class="form-control" type="text" style="width:400px;" required
+                                   value="{:implode(' ',$post_categories)}"
+                                   placeholder="请选择分类" onclick="doSelectCategory();" id="js-categories-name-input"
+                                   readonly/>
+                            <input class="form-control" type="hidden" value="{$post_category_ids}"
+                                   name="post[categories]"
+                                   id="js-categories-id-input"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>岗位名称<span class="form-required">*</span></th>
+                        <td>
+                            <input id="post-id" type="hidden" name="post[id]" value="{$post.id}">
+                            <input class="form-control" type="text" style="width:500px;" name="post[post_title]" id="title" required value="{$post.post_title}" placeholder="请输入岗位名称"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>薪资范围<span class="form-required">*</span></th>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-inline">
+                                        <input class="form-control" type="text" style="width:100px;" name="post[hourly_wage]"
+                                   id="hourly_wage" required value="{$post.hourly_wage|default='0.00'}" placeholder="时薪"/> 元 / 天
+                                        &nbsp;&nbsp;&nbsp;&nbsp; 月薪：
+                                        <input class="form-control" type="text" style="width:120px;" name="post[monthly_wage_min]"
+                                   id="monthly_wage_min" required value="{$post.monthly_wage_min|default='0.00'}" placeholder="起薪"/> - 
+                                        <input class="form-control" type="text" style="width:120px;" name="post[monthly_wage_max]"
+                                   id="monthly_wage_max" required value="{$post.monthly_wage_max|default='0.00'}" placeholder="最高薪资"/> 月
+                                   &nbsp;&nbsp;&nbsp;&nbsp; 返费：
+                                        <input class="form-control" type="text" style="width:120px;" name="post[return_fee]"
+                                   id="return_fee" required value="{$post.return_fee|default='0.00'}" placeholder="返费"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>年龄范围<span class="form-required">*</span></th>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-inline">
+                                        <input class="form-control" type="text" name="post[age_min]"
+                                   id="age_min" required value="{$post.age_min}" placeholder="请输入最小年龄"/> - 
+                                        <input class="form-control" type="text" name="post[age_max]"
+                                   id="age_max" required value="{$post.age_max}" placeholder="请输入最大年龄"/> 周岁
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>岗位标签<span class="form-required">*</span></th>
+                        <td>
+                            <input class="form-control" type="text" name="post[post_keywords]" id="keywords" required value="{$post.post_keywords}"
+                                   placeholder="请输入岗位标签，多标签用英文逗号隔开">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>企业优势<span class="form-required">*</span></th>
+                        <td>
+                            <input class="form-control" type="text" name="post[advantage_keywords]" id="advantage_keywords" required value="{$post.advantage_keywords}"
+                                   placeholder="请输入企业优势标签，多标签用英文逗号隔开">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>岗位描述<span class="form-required">*</span></th>
+                        <td>
+                            <script type="text/plain" id="content1" name="post[post_excerpt]" style="height:100px">
+                            {$post.post_excerpt|default=""|htmlspecialchars_decode}</script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>岗位介绍<span class="form-required">*</span></th>
+                        <td>
+                            <script type="text/plain" id="content2" name="post[post_intro]" style="height:100px">
+                            {$post.post_intro|default=""|htmlspecialchars_decode}</script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>薪资福利<span class="form-required">*</span></th>
+                        <td>
+                            <script type="text/plain" id="content3" name="post[compensation_benefit]" style="height:100px" required>
+                            {$post.compensation_benefit|default=""|htmlspecialchars_decode}</script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>录取条件<span class="form-required">*</span></th>
+                        <td>
+                            <script type="text/plain" id="content4" name="post[admission_requirement]" style="height:100px" required>
+                            {$post.admission_requirement|default=""|htmlspecialchars_decode}</script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>企业介绍<span class="form-required">*</span></th>
+                        <td>
+                            <script type="text/plain" id="content5" name="post[company_intro]" style="height:100px" required>
+                            {$post.company_intro|default=""|htmlspecialchars_decode}</script>
+                        </td>
+                    </tr>
+                </table>
+                <hook name="job_admin_post_edit_view_main"/>
+                <div class="form-group">
+                    <div class="col-sm-offset-10 col-sm-10">
+                        <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('SAVE')}</button>
+                        <a class="btn btn-default" href="{:url('AdminJob/index')}">{:lang('BACK')}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <table class="table table-bordered">
+                    <tr>
+                        <th><b>地址坐标</b><span class="form-required">*</span></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-inline">
+                                        <input class="form-control" type="text" name="post[longitude]" id="{$lnglot_prefix}longitude" readonly="readonly" value="{$post.longitude ? : '';}" placeholder="坐标经度" required>&nbsp;&nbsp;
+                                        <input class="form-control" type="text" name="post[latitude]" id="{$lnglot_prefix}latitude" readonly="readonly" value="{$post.latitude ? : '';}" placeholder="坐标纬度" required>&nbsp;&nbsp;
+                                        <button title="拾取坐标" type="button" onclick="doSelectLocation()" class='btn btn-primary'><i class="fa fa-map-marker"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><b>企业地址</b><span class="form-required">*</span></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-inline">
+                                        省份：
+                                        <select class="form-control" name="post[province_id]" id="province" required>
+                                            <option value="">请选择省份</option>
+                                        </select>
+                                        &nbsp;&nbsp;&nbsp;&nbsp; 城市：
+                                        <select class="form-control" name="post[city_id]" id="city" required>
+                                            <option value="">请选择城市</option>
+                                        </select>
+                                        &nbsp;&nbsp;&nbsp;&nbsp; 县区：
+                                        <select class="form-control" name="post[county_id]" id="county" required>
+                                            <option value="">请选择县区</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input class="form-control" type="text" name="post[address]" id="address" value="{$post.address}" placeholder="请输入详细地址" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><b>入职流程<span class="form-required">*</span></b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <script type="text/plain" id="content6" name="post[entry_process]" style="height:100px" required>
+                            {$post.entry_process|default=""|htmlspecialchars_decode}</script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><b>温馨提示<span class="form-required">*</span></b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <script type="text/plain" id="content7" name="post[kindly_reminder]" style="height:100px" required>
+                            {$post.kindly_reminder|default=""|htmlspecialchars_decode}</script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><b>客服电话<span class="form-required">*</span></b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-inline">
+                                        姓名：
+                                        <input class="form-control" type="text" name="post[customer_name]" id="customer_name" value="{$post.customer_name ? : '';}" placeholder="请输入客服姓名" required> &nbsp;&nbsp;&nbsp;&nbsp; 微信：
+                                        <input class="form-control" type="text" name="post[customer_weixin]" id="customer_weixin" value="{$post.customer_weixin ? : '';}" placeholder="请输入客服微信" required> &nbsp;&nbsp;&nbsp;&nbsp; 电话：
+                                        <input class="form-control" type="text" name="post[customer_hotline]" id="customer_hotline" value="{$post.customer_hotline ? : '';}" placeholder="请输入客服电话" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>缩略图<span class="form-required">*</span></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <input type="hidden" name="post[more][thumbnail]" id="thumbnail"
+                                       value="{$post.more.thumbnail|default=''}">
+                                <a href="javascript:uploadOneImage('图片上传','#thumbnail');">
+                                    <if condition="empty($post.more.thumbnail)">
+                                        <img src="__TMPL__/public/assets/images/default-thumbnail.png"
+                                             id="thumbnail-preview"
+                                             width="80" style="cursor: pointer"/>
+                                        <else/>
+                                        <img src="{:cmf_get_image_preview_url($post.more.thumbnail)}"
+                                             id="thumbnail-preview"
+                                             width="80" style="cursor: pointer"/>
+                                    </if>
+                                </a>
+                                <input type="button" class="btn btn-sm btn-cancel-thumbnail" value="取消图片">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><b>相册<span class="form-required">*</span></b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <ul id="photos" class="pic-list list-unstyled form-inline">
+                                <notempty name="post.more.photos">
+                                    <foreach name="post.more.photos" item="vo">
+                                        <php>$img_url=cmf_get_image_preview_url($vo['url']);</php>
+                                        <li id="saved-image{$key}" style="width: 80px; float: left; margin-right: 20px">
+                                            <input id="photo-{$key}" type="hidden" name="photo_urls[]"
+                                                   value="{$vo.url}">
+                                            <input class="form-control" id="photo-{$key}-name" type="hidden"
+                                                   name="photo_names[]"
+                                                   value="{$vo.name|default=''}" style="width: 200px;" title="图片名称">
+                                            <img id="photo-{$key}-preview"
+                                                 src="{:cmf_get_image_preview_url($vo['url'])}"
+                                                 style="height:60px;width:80px;"
+                                                 onclick="parent.imagePreviewDialog(this.src);">
+                                            <a href="javascript:uploadOneImage('图片上传','#photo-{$key}');">替换</a>
+                                            <a href="javascript:(function(){$('#saved-image{$key}').remove();})();">移除</a>
+                                        </li>
+                                    </foreach>
+                                </notempty>
+                            </ul>
+                            <a href="javascript:uploadMultiImage('图片上传','#photos','photos-item-tpl');"
+                               class="btn btn-sm btn-default">选择图片</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><b>发布时间</b></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input class="form-control js-bootstrap-datetime" type="text" name="post[published_time]"
+                                   value="{:date('Y-m-d H:i:s',time())}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>状态</th>
+                        <php>
+                            $status_yes=$post['post_status']==1?"checked":"";
+                            $is_top_yes=$post['is_top']==1?"checked":"";
+                            $recommended_yes=$post['recommended']==1?"checked":"";
+                        </php>
+                    </tr>
+                    <tr>
+                        <td>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-inline">
+                                    <div class="checkbox" style="padding-right: 5px;">
+                                        <label>
+                                            <input type="checkbox" id="post-status-checkbox" name="post[post_status]" value="1"
+                                                   {$status_yes}>&nbsp;发布
+                                            <span id="post-status-error" style="color: red;display: none"></span>
+                                        </label>
+                                    </div>
+                                    <div class="checkbox" style="padding-right: 5px;">
+                                        <label><input type="checkbox" id="is-top-checkbox" name="post[is_top]" value="1"
+                                                      {$is_top_yes}>&nbsp;置顶</label>
+                                        <span id="is-top-error" style="color: red;display: none"></span>
+                                    </div>
+                                    <div class="checkbox" style="padding-right: 5px;">
+                                        <label>
+                                            <input type="checkbox" id="recommended-checkbox" name="post[recommended]" value="1"
+                                                   {$recommended_yes}>&nbsp;推荐
+                                            <span id="recommended-error" style="color: red;display: none"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                </table>
+
+                <hook name="job_admin_post_edit_view_right_sidebar"/>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="__STATIC__/js/admin.js"></script>
+<script type="text/javascript">
+    //编辑器路径定义
+    var editorURL = GV.WEB_ROOT;
+</script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__STATIC__/js/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        // 实例化百度编辑器  ------------
+        for (var i=1; i <= 7; i++) {
+            crateueditor('editorcontent'+i, 'content'+i)
+        }
+
+        function crateueditor(ob, id){
+            var ob = new baidu.editor.ui.Editor();
+            ob.render(id);
+            try {
+                ob.sync();
+            } catch (err) {
+            }
+        }
+        // 实例化百度编辑器  ------------
+
+        $('.btn-cancel-thumbnail').click(function () {
+            $('#thumbnail-preview').attr('src', '__TMPL__/public/assets/images/default-thumbnail.png');
+            $('#thumbnail').val('');
+        });
+
+        $('#more-template-select').val("{$post.more.template|default=''}");
+
+        var province_id = "{$post.province_id|default=null}";
+        var city_id = "{$post.city_id|default=0}";
+        var county_id = "{$post.county_id|default=0}";
+        
+        getRegion(null,'province','省份', province_id);
+        if (city_id) {
+            getRegion(province_id, 'city','城市', city_id);
+        }
+
+        if (county_id) {
+            getRegion(city_id, 'county','县区', county_id);
+        }
+
+        $('#province').change(function() {
+            getRegion($(this).val(), 'city','城市');
+            getRegion(0, 'county','县区');
+        })
+
+        $('#city').change(function() {
+            getRegion($(this).val(), 'county','县区');
+        })
+    });
+
+    function doSelectCategory() {
+        var selectedCategoriesId = $('#js-categories-id-input').val();
+        openIframeLayer("{:url('AdminJobCategory/select')}?ids=" + selectedCategoriesId, '请选择分类', {
+            area: ['700px', '400px'],
+            btn: ['确定', '取消'],
+            yes: function (index, layero) {
+                //do something
+
+                var iframeWin          = window[layero.find('iframe')[0]['name']];
+                var selectedCategories = iframeWin.confirm();
+                if (selectedCategories.selectedCategoriesId.length == 0) {
+                    layer.msg('请选择分类');
+                    return;
+                }
+                $('#js-categories-id-input').val(selectedCategories.selectedCategoriesId.join(','));
+                $('#js-categories-name-input').val(selectedCategories.selectedCategoriesName.join(' '));
+                //console.log(layer.getFrameIndex(index));
+                layer.close(index); //如果设定了yes回调，需进行手工关闭
+            }
+        });
+    }
+
+    // 获取坐标
+    function doSelectLocation() {
+        openIframeLayer("{:url('admin/Map/index')}?type=1&lng_lat_prefix={$lnglot_prefix}", '请选择定位', {area: ['800px', '600px']});
+    }
+    
+    // 区域选择
+    function getRegion(pid,id,text,select=0) {
+        if (pid == 0) {
+            var html = '<option value="">请选择'+text+'</option>';
+            $('#'+id).html(html);
+        } else {
+            $.get('/region',{pid:pid},function(res) {
+                var data = res.data;
+                if (data) {
+                    var html = '<option value="">请选择'+text+'</option>';
+                    for (i in data) {
+                        if (select > 0 && data[i]['id'] == select) {
+                            html += '<option selected="selected" value="'+data[i]['id']+'">'+data[i]['name']+'</option>';
+                        } else {
+                            html += '<option value="'+data[i]['id']+'">'+data[i]['name']+'</option>';
+                        }
+                    }
+                    $('#'+id).html(html);
+                }
+            })
+        }
+    }
+</script>
+
+<script>
+
+    var publishYesUrl   = "{:url('AdminJob/publish',array('yes'=>1))}";
+    var publishNoUrl    = "{:url('AdminJob/publish',array('no'=>1))}";
+    var topYesUrl       = "{:url('AdminJob/top',array('yes'=>1))}";
+    var topNoUrl        = "{:url('AdminJob/top',array('no'=>1))}";
+    var recommendYesUrl = "{:url('AdminJob/recommend',array('yes'=>1))}";
+    var recommendNoUrl  = "{:url('AdminJob/recommend',array('no'=>1))}";
+
+    var postId = $('#post-id').val();
+
+    //发布操作
+    $("#post-status-checkbox").change(function () {
+        if ($('#post-status-checkbox').is(':checked')) {
+            //发布
+            $.ajax({
+                url: publishYesUrl, type: "post", dataType: "json", data: {ids: postId}, success: function (data) {
+                    if (data.code != 1) {
+                        $('#post-status-checkbox').removeAttr("checked");
+                        $('#post-status-error').html(data.msg).show();
+
+                    } else {
+                        $('#post-status-error').hide();
+                    }
+                }
+            });
+        } else {
+            //取消发布
+            $.ajax({
+                url: publishNoUrl, type: "post", dataType: "json", data: {ids: postId}, success: function (data) {
+                    if (data.code != 1) {
+                        $('#post-status-checkbox').prop("checked", 'true');
+                        $('#post-status-error').html(data.msg).show();
+                    } else {
+                        $('#post-status-error').hide();
+                    }
+                }
+            });
+        }
+    });
+
+    //置顶操作
+    $("#is-top-checkbox").change(function () {
+        if ($('#is-top-checkbox').is(':checked')) {
+            //置顶
+            $.ajax({
+                url: topYesUrl, type: "post", dataType: "json", data: {ids: postId}, success: function (data) {
+                    if (data.code != 1) {
+                        $('#is-top-checkbox').removeAttr("checked");
+                        $('#is-top-error').html(data.msg).show();
+
+                    } else {
+                        $('#is-top-error').hide();
+                    }
+                }
+            });
+        } else {
+            //取消置顶
+            $.ajax({
+                url: topNoUrl, type: "post", dataType: "json", data: {ids: postId}, success: function (data) {
+                    if (data.code != 1) {
+                        $('#is-top-checkbox').prop("checked", 'true');
+                        $('#is-top-error').html(data.msg).show();
+                    } else {
+                        $('#is-top-error').hide();
+                    }
+                }
+            });
+        }
+    });
+    //推荐操作
+    $("#recommended-checkbox").change(function () {
+        if ($('#recommended-checkbox').is(':checked')) {
+            //推荐
+            $.ajax({
+                url: recommendYesUrl, type: "post", dataType: "json", data: {ids: postId}, success: function (data) {
+                    if (data.code != 1) {
+                        $('#recommended-checkbox').removeAttr("checked");
+                        $('#recommended-error').html(data.msg).show();
+
+                    } else {
+                        $('#recommended-error').hide();
+                    }
+                }
+            });
+        } else {
+            //取消推荐
+            $.ajax({
+                url: recommendNoUrl, type: "post", dataType: "json", data: {ids: postId}, success: function (data) {
+                    if (data.code != 1) {
+                        $('#recommended-checkbox').prop("checked", 'true');
+                        $('#recommended-error').html(data.msg).show();
+                    } else {
+                        $('#recommended-error').hide();
+                    }
+                }
+            });
+        }
+    });
+
+
+</script>
+
+
+</body>
+</html>

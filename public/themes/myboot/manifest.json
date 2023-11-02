@@ -1,0 +1,10 @@
+{
+  "name": "myboot",
+  "version": "1.0.0",
+  "demo_url": "http://demo.sandbean.com",
+  "author": "SoonCMF",
+  "lang": "zh-cn",
+  "author_url": "http://www.sandbean.com",
+  "keywords": "SoonCMF模板",
+  "description": "SoonCMF默认模板"
+}

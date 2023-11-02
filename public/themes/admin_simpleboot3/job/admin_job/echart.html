@@ -1,0 +1,148 @@
+<include file="public@header"/>
+
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('AdminJob/index')}">岗位管理</a></li>
+        <li class="active"><a href="#">工价折线图</a></li>
+    </ul>
+    <div id="main" style="width: 1200px;height:500px;margin:10px;"></div>
+    <div>
+    	<form action="{:url('AdminJob/echart')}" method="post" class="form-horizontal js-ajax-form margin-top-20">
+    		<input type="hidden" value="{$post.id}" name="post_id">
+    		<div class="row" style='margin-left: 10px'>
+            <div class="col-md-10">
+                <table class="table table-bordered">
+                	  <tr>
+                        <th width="60">月份</th>
+                        <foreach name="month_list" item="month">
+                        	<input type="hidden" value="{$month}" name="month[]">
+	                        <td style="text-align: center;">{$month}</td>
+	                    </foreach>
+                    </tr>
+                    <tr>
+                        <th width="60">工价</th>
+                        <foreach name="wage_record" item="wage">
+                        	<td>
+	                            <input class="form-control" type="text" name="wage[]"
+                                   required value="{$wage|default=0.00}" placeholder=""/>
+	                        </td>
+                        </foreach>
+                    </tr>
+                    <tr>
+                        <th width="60">返费</th>
+                        <foreach name="refee_record" item="refee">
+                        	<td>
+	                            <input class="form-control" type="text" name="refee[]"
+                                  required value="{$refee|default=0.00}" placeholder=""/>
+	                        </td>
+                        </foreach>
+                    </tr>
+                    <tr>
+                        <th width="60">综合</th>
+                        <foreach name="general_wage_record" item="general_wage">
+                          <td>
+                              <input class="form-control" type="text" name="general_wage[]"
+                                  required value="{$general_wage|default=0.00}" placeholder=""/>
+                          </td>
+                        </foreach>
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+            	<div class="col-md-6 col-sm-10" style="padding-left: 30px;">
+                    <p class="help-block"> * 更新本月金额会同步更新当前岗位小时工价和返费金额，请谨慎操作保存!</p>
+                </div>
+                <div class="col-sm-offset-1 col-sm-10">
+                    <button type="submit" class="btn btn-primary js-ajax-submit">{:lang('SAVE')}</button>
+                    <a class="btn btn-default" href="{:url('AdminJob/index')}">{:lang('BACK')}</a>
+                </div>
+            </div>
+        	</div>
+    	</form>
+    </div>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+<script src="__STATIC__/js/echarts/echarts.min.js"></script>
+<script type="text/javascript">
+  var data = {$data};
+  var months = data.months;
+  var post   = data.post;
+  var title  = post.post_title;
+  var wage_record  = data.wage_record;
+  var refee_record  = data.refee_record;
+  var general_wage_record  = data.general_wage_record;
+  
+  // 基于准备好的dom，初始化echarts实例
+  var myChart = echarts.init(document.getElementById('main'));
+  
+  // 指定图表的配置项和数据
+  option = {
+	  title: {
+	    text: title
+	  },
+	  tooltip: {
+	    trigger: 'axis'
+	  },
+	  legend: {
+	    data: ['返费', '小时工', '综合薪资']
+	  },
+	  grid: {
+	    left: '3%',
+	    right: '4%',
+	    bottom: '3%',
+	    containLabel: true
+	  },
+	  toolbox: {
+	    feature: {
+	      saveAsImage: {}
+	    }
+	  },
+	  xAxis: {
+	    type: 'category',
+	    boundaryGap: false,
+	    data: months
+	  },
+	  yAxis: {
+	    type: 'value'
+	  },
+	  series: [
+	    {
+	      name: '返费',
+	      type: 'line',
+	      // stack: 'Total',
+	      smooth: true,
+	      data: refee_record
+	    },
+	    {
+	      name: '小时工',
+	      type: 'line',
+	      // stack: 'Total',
+	      smooth: true,
+	      data: wage_record
+	    },
+      {
+        name: '综合薪资',
+        type: 'line',
+        // stack: 'Total',
+        smooth: true,
+        data: general_wage_record
+      }
+	  ]
+	};
+
+  // 使用刚指定的配置项和数据显示图表。
+  myChart.setOption(option);
+  myChart.on('click', function(params) {
+	// 控制台打印数据的名称
+	console.log(params.name);
+  });
+</script>
+<script>
+    function reloadPage(win) {
+        win.location.reload();
+    }
+</script>
+</body>
+</html>

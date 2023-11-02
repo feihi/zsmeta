@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>获取点击的经纬度</title>
+<link rel="stylesheet" type="text/css" href="map.css">
+<script src="/static/plugs/layui/layui.all.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=KwZhXg0g9C5zZpDIZX895Xfn"></script>
+</head>
+<body>
+<div class="panel">
+    <p style="height:40px;margin-left: 10px;margin-bottom: 10px">
+        <span class="label">搜索：</span>
+        <input class="build-input  input-border input-border-radius" name="search" type="text" id="search" size="20" placeholder="请输入要搜索地址" />
+        <button onclick="pickup()" type="submit" class="layui-btn">拾取</button>
+        <div id="searchResultPanel" style="border:1px solid #38d6b0;width:150px;height:auto; display:none;"></div>
+    </p>
+    <div style="margin: 0 auto">
+        <div id="l-map"></div>
+    </div>
+</div>
+<script src="baiduMap.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	
+</script>
+</body>
+</html>

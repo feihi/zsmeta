@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <include file="public/head"/>
+    <title>登陆时长控制</title>
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a>登陆时长控制</a></li>
+    </ul>
+    <div class="common-form">
+        <form method="post" class="form-horizontal js-ajax-form margin-top-20" action="{:cmf_plugin_url('LoginTime://AdminIndex/time')}" novalidate="novalidate">
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="text">时长时间</label>
+                <div class="col-md-6 col-sm-10">
+                    <input type="text" name="time" class="form-control valid" value="{$time}" id="time" aria-invalid="false">
+                    <p class="help-block">默认是一天。一天等于86400</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <input type="hidden" name="id" value="34" readonly="">
+                    <button type="submit" class="btn btn-primary js-ajax-submit" data-refresh="0">保存</button>
+                    <a class="btn btn-default" href="javascript:history.back(-1);">返回</a>
+                </div>
+            </div>
+    </form>
+    </div>
+</div>
+<include file="public/scripts"/>
+</body>
+</html>

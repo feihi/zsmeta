@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+<head>
+	<include file="public/head"/>
+	<title></title>
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+</head>
+<body>
+<div class="wrap">
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="javascript:;">数据备份</a></li>
+		<li><a href="{:cmf_plugin_url('HzBackSql://admin_index/restore')}">数据还原</a></li>
+	</ul>
+	<div class="common-form">
+		<form action="{:cmf_plugin_url('HzBackSql://admin_index/index_post')}" method="post" class="form-horizontal js-ajax-form margin-top-20">
+			<div class="form-group">
+				<label for="input-sizelimit" class="col-sm-2 control-label">每个分卷文件大小</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control valid" id="input-sizelimit" name="sizelimit" value="{$sizelimit}" style=" display:inline-block;width:90%"> K
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-backup_name" class="col-sm-2 control-label">备份名称</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control valid" id="input-backup_name" name="backup_name" value="{$backup_name}" style=" display:inline-block;width:90%">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">备份类型</label>
+				<div class="col-md-6 col-sm-10">
+					<label><input type="radio" checked="checked" value="full" name="backup_type" onclick="javascript:$('#js-showtables').hide();"> 全部备份 &nbsp;&nbsp;</label>
+					<label><input type="radio" value="custom" name="backup_type" onclick="javascript:$('#js-showtables').show();"> 自定义备份</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">&nbsp;</label>
+				<div class="col-md-6 col-sm-10">
+					<table width="100%">
+					<tr id="js-showtables">
+						<td align="center" width="180">
+							<label><input name="selectall" type="checkbox" checked="checked" value=""  /> 全选</label>
+						</td>
+						<td colspan="2">
+							<volist name="tables" id="val">
+								<label class="checkbox inline" style="width:200px;float: left"><input name="backup_tables[{$val}]" type="checkbox" value="-1" checked="checked" class="js-checkitem" />&nbsp;&nbsp;{$val}</label>
+							</volist>
+						</td>
+					</tr>
+					</table>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">开始备份数据</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<style type="text/css">
+#js-showtables{display:none;}
+.checkbox.inline{
+	margin-left: 10px;
+}
+</style>
+<include file="public/scripts"/>
+<script>
+	var checked = false;
+	$('input[name="selectall"]').click(function(){
+		$('.js-checkitem').prop('checked', checked);
+		checked = checked == true ? false: true;
+	})
+</script>
+</body>
+</html>
